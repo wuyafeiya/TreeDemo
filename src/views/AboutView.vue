@@ -23,9 +23,13 @@
         </el-col>
         <el-col :span="2" style="text-align: center">
           <div>
-            <el-button type="danger" v-for="item in AddList" :key="item.id">{{
-              item.name
-            }}</el-button>
+            <el-button
+              type="danger"
+              v-for="item in AddList"
+              :key="item.id"
+              @click="AddFiled(item)"
+              >{{ item.name }}</el-button
+            >
           </div>
           <div style="margin: 20px 0">
             <el-button type="primary" v-for="item in MoveList" :key="item.id">{{
@@ -37,7 +41,17 @@
           </div>
         </el-col>
         <el-col :span="12">
+<<<<<<< HEAD
           <el-table :data="tableData" row-key="id" border style="width: 100%">
+=======
+          <el-table
+            :data="tableData"
+            row-key="id"
+            border
+            style="width: 100%"
+            @cell-click="cellInfo"
+          >
+>>>>>>> 56d0dbf1a5d5da0b85af30c17d5f56c843972740
             <el-table-column prop="date" label="日期" width="180">
             </el-table-column>
             <el-table-column prop="name" label="姓名" width="180">
@@ -57,6 +71,8 @@ export default {
   data() {
     return {
       centerDialogVisible: false,
+      TableId: '',
+      TreeId: '',
       defaultProps: {
         children: 'children',
         label: 'label'
@@ -78,12 +94,15 @@ export default {
       // 树形结构数据
       data: [
         {
+          id: 1,
           label: '一级 1',
           children: [
             {
+              id: 11,
               label: '二级 1-1',
               children: [
                 {
+                  id: 12,
                   label: '三级 1-1-1'
                 }
               ]
@@ -91,20 +110,25 @@ export default {
           ]
         },
         {
+          id: 2,
           label: '一级 2',
           children: [
             {
+              id: 21,
               label: '二级 2-1',
               children: [
                 {
+                  id: 212,
                   label: '三级 2-1-1'
                 }
               ]
             },
             {
+              id: 22,
               label: '二级 2-2',
               children: [
                 {
+                  id: 221,
                   label: '三级 2-2-1'
                 }
               ]
@@ -112,20 +136,25 @@ export default {
           ]
         },
         {
+          id: 3,
           label: '一级 3',
           children: [
             {
+              id: 31,
               label: '二级 3-1',
               children: [
                 {
+                  id: 311,
                   label: '三级 3-1-1'
                 }
               ]
             },
             {
+              id: 32,
               label: '二级 3-2',
               children: [
                 {
+                  id: 321,
                   label: '三级 3-2-1'
                 }
               ]
@@ -133,20 +162,25 @@ export default {
           ]
         },
         {
+          id: 4,
           label: '一级 4',
           children: [
             {
+              id: 41,
               label: '二级 4-1',
               children: [
                 {
+                  id: 411,
                   label: '三级 4-1-1'
                 }
               ]
             },
             {
+              id: 42,
               label: '二级 4-2',
               children: [
                 {
+                  id: 421,
                   label: '三级 4-2-1'
                 }
               ]
@@ -154,20 +188,25 @@ export default {
           ]
         },
         {
+          id: 5,
           label: '一级 5',
           children: [
             {
+              id: 51,
               label: '二级 5-1',
               children: [
                 {
+                  id: 511,
                   label: '三级 5-1-1'
                 }
               ]
             },
             {
+              id: 52,
               label: '二级 5-2',
               children: [
                 {
+                  id: 521,
                   label: '三级 5-2-1'
                 }
               ]
@@ -175,20 +214,25 @@ export default {
           ]
         },
         {
+          id: 6,
           label: '一级 6',
           children: [
             {
+              id: 61,
               label: '二级 6-1',
               children: [
                 {
+                  id: '611',
                   label: '三级 6-1-1'
                 }
               ]
             },
             {
+              id: 62,
               label: '二级 6-2',
               children: [
                 {
+                  id: 621,
                   label: '三级 6-2-1'
                 }
               ]
@@ -196,20 +240,25 @@ export default {
           ]
         },
         {
+          id: 7,
           label: '一级 7',
           children: [
             {
+              id: 71,
               label: '二级 7-1',
               children: [
                 {
+                  id: 711,
                   label: '三级 7-1-1'
                 }
               ]
             },
             {
+              id: 72,
               label: '二级 7-2',
               children: [
                 {
+                  id: 721,
                   label: '三级 7-2-1'
                 }
               ]
@@ -218,7 +267,48 @@ export default {
         }
       ],
       // 表格 数据
-      tableData: []
+
+
+      tableData: [
+        { id: this.$store.state.label, date: store.state.label, children: [] }
+      ]
+    }
+  },
+  methods: {
+    handleNodeClick(data) {
+      this.$store.commit('ChangeTreeName', data.label)
+      this.TreeId = data.id
+    },
+    cellInfo(row) {
+      this.TableId = row.id
+    },
+    AddFiled(data) {
+      switch (data.id) {
+        case 'Addfiled':
+          if (this.$store.state.TreeName) {
+            // 选中 表格 数据
+            if (this.TableId) {
+              this.tableData.push({
+                id: this.TreeId,
+                data: this.$store.state.TreeName,
+                children: []
+              })
+            } else {
+              console.log(this.$store.state.TreeName)
+              this.tableData[this.tableData.length - 1].children.push({
+                id: this.TreeId,
+                data: this.$store.state.TreeName
+              })
+              console.log(this.tableData)
+            }
+          } else {
+            this.$notify.warning({
+              title: '警告',
+              message: '没有选择字段节点'
+            })
+          }
+      }
+>>>>>>> 56d0dbf1a5d5da0b85af30c17d5f56c843972740
     }
   },
   methods: {
