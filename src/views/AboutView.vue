@@ -47,8 +47,9 @@
             border
             style="width: 100%"
             @cell-click="cellInfo"
+            :tree-props="{ children: 'children', hasChildren: 'hasChildren' }"
           >
-            <el-table-column prop="date" label="日期" width="180">
+            <el-table-column prop="data" label="日期" width="180">
             </el-table-column>
             <el-table-column prop="name" label="姓名" width="180">
             </el-table-column>
@@ -69,6 +70,9 @@ export default {
       centerDialogVisible: false,
       TableId: '',
       TreeId: '',
+      index: '',
+      ChildrenIndex: '',
+      RowInfo: '',
       defaultProps: {
         children: 'children',
         label: 'label'
@@ -264,7 +268,7 @@ export default {
       ],
       // 表格 数据
       tableData: [
-        { id: this.$store.state.label, date: store.state.label, children: [] }
+        { id: this.$store.state.label, data: store.state.label, children: [] }
       ]
     }
   },
@@ -274,6 +278,8 @@ export default {
       this.TreeId = data.id
     },
     cellInfo(row) {
+      console.log(row)
+      this.RowInfo = row
       this.TableId = row.id
     },
     AddFiled(data) {
@@ -282,18 +288,27 @@ export default {
           if (this.$store.state.TreeName) {
             // 选中 表格 数据
             if (this.TableId) {
-              this.tableData.push({
-                id: this.TreeId,
-                data: this.$store.state.TreeName,
-                children: []
-              })
+              // 判断 数据 级别 有 children 父级 无 子级
+              if (this.RowInfo.children) {
+                this.TableNode(this.TableId)
+                this.tableData.splice(this.index + 1, 0, {
+                  id: this.$store.state.TreeName,
+                  data: this.$store.state.TreeName,
+                  children: []
+                })
+                console.log('我是顶级')
+              } else {
+                this.ChildrenID(this.TableId)
+                console.log(this.ChildrenIndex)
+                console.log('我是子级')
+              }
+              console.log(this.index)
+              this.TableId = ''
             } else {
-              console.log(this.$store.state.TreeName)
               this.tableData[this.tableData.length - 1].children.push({
-                id: this.TreeId,
+                id: this.$store.state.TreeName,
                 data: this.$store.state.TreeName
               })
-              console.log(this.tableData)
             }
           } else {
             this.$notify.warning({
@@ -302,6 +317,28 @@ export default {
             })
           }
       }
+    },
+    // 顶级判断
+    TableNode(id) {
+      this.tableData.forEach((item, index) => {
+        if (item.id == id) {
+          this.index = index
+        }
+      })
+    },
+    // 子级判断
+    ChildrenID(id) {
+      console.log(this.tableData)
+      console.log(id)
+      this.tableData.forEach((item, index) => {
+        if (item.children && item.children.length > 0) {
+          this.item.children.forEach((item1) => {
+            if (item1.id == id) {
+              this.ChildrenIndex = index
+            }
+          })
+        }
+      })
     }
   }
 }
@@ -333,7 +370,6 @@ export default {
   padding: 10px 0;
   background-color: #f9fafc;
 }
-
 ::v-deep .el-button {
   width: 98px;
   margin-left: 0;
