@@ -72,6 +72,7 @@ export default {
       TreeId: '',
       index: '',
       ChildrenIndex: '',
+      FatherIndex: '',
       RowInfo: '',
       defaultProps: {
         children: 'children',
@@ -312,24 +313,29 @@ export default {
             // 选中 表格 数据
             if (this.TableId) {
               // 判断 数据 级别 有 children 父级 无 子级
+              // 父节点
               if (this.RowInfo.children) {
                 this.TableNode(this.TableId)
                 this.tableData.splice(this.index + 1, 0, {
-                  id: this.$store.state.TreeName,
+                  id: this.TreeId,
                   data: this.$store.state.TreeName,
                   children: []
                 })
                 console.log('我是顶级')
+                // 子节点
               } else {
                 this.ChildrenID(this.TableId)
-                console.log(this.ChildrenIndex)
-                console.log('我是子级')
+                this.tableData[this.FatherIndex].children.splice(
+                  this.ChildrenIndex + 1,
+                  0,
+                  { id: this.TreeId, data: this.$store.state.TreeName }
+                )
               }
               console.log(this.index)
               this.TableId = ''
             } else {
               this.tableData[this.tableData.length - 1].children.push({
-                id: this.$store.state.TreeName,
+                id: this.TreeId,
                 data: this.$store.state.TreeName
               })
             }
@@ -339,6 +345,16 @@ export default {
               message: '没有选择字段节点'
             })
           }
+          break
+        case 'Delfiled':
+          //...删除节点
+          break
+        // case 'Addor':
+        //   breack,
+        // case 'Addand':
+        //   breack
+        // case 'Addxor':
+        //   break
       }
     },
     // 顶级判断
@@ -349,15 +365,15 @@ export default {
         }
       })
     },
-    // 子级判断
+    // 子节点 判断
     ChildrenID(id) {
-      console.log(this.tableData)
-      console.log(id)
       this.tableData.forEach((item, index) => {
+        console.log(item.children)
         if (item.children && item.children.length > 0) {
-          this.item.children.forEach((item1) => {
+          item.children.forEach((item1, index1) => {
             if (item1.id == id) {
-              this.ChildrenIndex = index
+              this.FatherIndex = index
+              this.ChildrenIndex = index1
             }
           })
         }
