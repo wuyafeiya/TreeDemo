@@ -322,6 +322,16 @@ export default {
               message: '没有选择字段节点'
             })
           }
+          break
+        case 'Delfiled':
+          //...删除节点
+          break
+        // case 'Addor':
+        //   breack,
+        // case 'Addand':
+        //   breack
+        // case 'Addxor':
+        //   break
       }
     },
     // 顶级判断
