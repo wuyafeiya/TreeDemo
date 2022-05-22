@@ -9,6 +9,7 @@
 </template>
 
 <script>
+import store from '@/store'
 export default {
   data() {
     return {
@@ -157,6 +158,11 @@ export default {
         children: 'children',
         label: 'label'
       }
+    }
+  },
+  methods:{
+    handleNodeClick(data){
+      store.state.label = data.label
     }
   }
 }

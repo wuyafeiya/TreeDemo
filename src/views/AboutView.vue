@@ -37,7 +37,7 @@
           </div>
         </el-col>
         <el-col :span="12">
-          <el-table :data="tableData" border style="width: 100%">
+          <el-table :data="tableData" row-key="id" border style="width: 100%">
             <el-table-column prop="date" label="日期" width="180">
             </el-table-column>
             <el-table-column prop="name" label="姓名" width="180">
@@ -52,6 +52,7 @@
   </div>
 </template>
 <script>
+import store from '@/store'
 export default {
   data() {
     return {
@@ -217,11 +218,20 @@ export default {
         }
       ],
       // 表格 数据
-      tableData: [],
-      handleNodeClick() {
-        console.log(123)
-      }
+      tableData: []
     }
+  },
+  methods: {
+    handleNodeClick() {
+      console.log(123)
+    },
+    handleTable() {
+      console.log(store.state.label)
+      this.tableData = [{ date: store.state.label }]
+    }
+  },
+  created() {
+    this.handleTable()
   }
 }
 </script>
