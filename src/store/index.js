@@ -3,13 +3,13 @@ import Vuex from 'vuex'
 Vue.use(Vuex)
 export default new Vuex.Store({
   state: {
-    label:''
+    label: ''
   },
-  getters: {
-
-  },
+  getters: {},
   mutations: {
-
+    ChangeLabel(state, NewValue) {
+      state.label = NewValue
+    }
   },
   actions: {},
   modules: {}

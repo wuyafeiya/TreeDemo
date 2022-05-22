@@ -219,40 +219,14 @@ export default {
       ],
       // 表格 数据
       tableData: [
-        {
-          id: 3,
-          date: '2016-05-01',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1519 弄',
-          children: [
-            {
-              id: 31,
-              date: '2016-05-01',
-              name: '王小虎',
-              address: '上海市普陀区金沙江路 1519 弄'
-            },
-            {
-              id: 32,
-              date: '2016-05-01',
-              name: '王小虎',
-              address: '上海市普陀区金沙江路 1519 弄'
-            }
-          ]
-        }
+        { id: this.$store.state.label, date: store.state.label, children: [] }
       ]
     }
   },
   methods: {
     handleNodeClick() {
       console.log(123)
-    },
-    handleTable() {
-      console.log(store.state.label)
-      this.tableData = [{date:store.state.label}]
     }
-  },
-  created() {
-    this.handleTable()
   }
 }
 </script>
