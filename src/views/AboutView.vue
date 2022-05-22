@@ -41,7 +41,13 @@
           </div>
         </el-col>
         <el-col :span="12">
-          <el-table :data="tableData" row-key="id" border style="width: 100%">
+          <el-table
+            :data="tableData"
+            row-key="id"
+            border
+            style="width: 100%"
+            @cell-click="cellInfo"
+          >
             <el-table-column prop="date" label="日期" width="180">
             </el-table-column>
             <el-table-column prop="name" label="姓名" width="180">
@@ -61,6 +67,8 @@ export default {
   data() {
     return {
       centerDialogVisible: false,
+      TableId: '',
+      TreeId: '',
       defaultProps: {
         children: 'children',
         label: 'label'
@@ -262,11 +270,37 @@ export default {
   },
   methods: {
     handleNodeClick(data) {
-      console.log(data)
+      this.$store.commit('ChangeTreeName', data.label)
+      this.TreeId = data.id
+    },
+    cellInfo(row) {
+      this.TableId = row.id
     },
     AddFiled(data) {
       switch (data.id) {
         case 'Addfiled':
+          if (this.$store.state.TreeName) {
+            // 选中 表格 数据
+            if (this.TableId) {
+              this.tableData.push({
+                id: this.TreeId,
+                data: this.$store.state.TreeName,
+                children: []
+              })
+            } else {
+              console.log(this.$store.state.TreeName)
+              this.tableData[this.tableData.length - 1].children.push({
+                id: this.TreeId,
+                data: this.$store.state.TreeName
+              })
+              console.log(this.tableData)
+            }
+          } else {
+            this.$notify.warning({
+              title: '警告',
+              message: '没有选择字段节点'
+            })
+          }
       }
     }
   }

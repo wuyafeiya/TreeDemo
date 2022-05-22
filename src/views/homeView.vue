@@ -5,6 +5,7 @@
       :props="defaultProps"
       @node-click="handleNodeClick"
     ></el-tree>
+    <el-button type="danger" @click="AddData(data)">点击</el-button>
   </div>
 </template>
 
@@ -194,8 +195,17 @@ export default {
   },
   methods: {
     handleNodeClick(data) {
+      console.log(data)
       this.$store.commit('ChangeLabel', data.label)
     }
+    // AddData(data) {
+    //   data.forEach((item) => {
+    //     item.name = item.label
+    //     if (item.children && item.children.length > 0) {
+    //       this.AddData(item.children)
+    //     }
+    //   })
+    // }
   }
 }
 </script>
