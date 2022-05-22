@@ -12,6 +12,7 @@
     >
       <el-row type="flex" justify="space-between">
         <el-col :span="4" style="border: 1px solid red">
+          <div style="background: #99a9bf">报文字段</div>
           <el-scrollbar style="height: 100%">
             <el-tree
               :data="data"
