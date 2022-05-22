@@ -194,12 +194,7 @@ export default {
       }
     }
   },
-<<<<<<< HEAD
-  methods:{
-    handleNodeClick(data){
-      store.state.label = data.label
-    }
-=======
+
   methods: {
     handleNodeClick(data) {
       console.log(data)
@@ -213,7 +208,6 @@ export default {
     //     }
     //   })
     // }
->>>>>>> 56d0dbf1a5d5da0b85af30c17d5f56c843972740
   }
 }
 </script>

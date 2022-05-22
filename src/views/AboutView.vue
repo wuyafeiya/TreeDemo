@@ -41,9 +41,6 @@
           </div>
         </el-col>
         <el-col :span="12">
-<<<<<<< HEAD
-          <el-table :data="tableData" row-key="id" border style="width: 100%">
-=======
           <el-table
             :data="tableData"
             row-key="id"
@@ -51,7 +48,6 @@
             style="width: 100%"
             @cell-click="cellInfo"
           >
->>>>>>> 56d0dbf1a5d5da0b85af30c17d5f56c843972740
             <el-table-column prop="date" label="日期" width="180">
             </el-table-column>
             <el-table-column prop="name" label="姓名" width="180">
@@ -268,10 +264,25 @@ export default {
       ],
       // 表格 数据
 
-
       tableData: [
         { id: this.$store.state.label, date: store.state.label, children: [] }
       ]
+      // tableData: [
+      //   {
+      //     id: 3,
+      //     date: '2016-05-01',
+      //     name: '王小虎',
+      //     address: '上海市普陀区金沙江路 1519 弄',
+      //     children: [
+      //       {
+      //         id: 31,
+      //         date: '2016-05-01',
+      //         name: '王小虎',
+      //         address: '上海市普陀区金沙江路 1519 弄'
+      //       }
+      //     ]
+      //   }
+      // ]
     }
   },
   methods: {
@@ -279,8 +290,12 @@ export default {
       this.$store.commit('ChangeTreeName', data.label)
       this.TreeId = data.id
     },
-    cellInfo(row) {
-      this.TableId = row.id
+    cellInfo(row,column,cell,e) {
+    this.TableId = row.id
+      console.log(row);
+      console.log(column);
+      console.log(cell);
+      console.log(e);
     },
     AddFiled(data) {
       switch (data.id) {
@@ -290,14 +305,15 @@ export default {
             if (this.TableId) {
               this.tableData.push({
                 id: this.TreeId,
-                data: this.$store.state.TreeName,
+                date: this.$store.state.TreeName,
                 children: []
               })
+              this.TableId = ''
             } else {
               console.log(this.$store.state.TreeName)
               this.tableData[this.tableData.length - 1].children.push({
                 id: this.TreeId,
-                data: this.$store.state.TreeName
+                date: this.$store.state.TreeName
               })
               console.log(this.tableData)
             }
@@ -308,21 +324,17 @@ export default {
             })
           }
       }
->>>>>>> 56d0dbf1a5d5da0b85af30c17d5f56c843972740
     }
-  },
-  methods: {
-    handleNodeClick() {
-      console.log(123)
-    },
-    handleTable() {
-      console.log(store.state.label)
-      this.tableData = [{ date: store.state.label }]
-    }
-  },
-  created() {
-    this.handleTable()
   }
+  // methods: {
+  //   handleNodeClick() {
+  //     console.log(123)
+  //   },
+  //   handleTable() {
+  //     console.log(store.state.label)
+  //     this.tableData = [{ date: store.state.label }]
+  //   }
+  // },
 }
 </script>
 <style scoped>
