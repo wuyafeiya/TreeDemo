@@ -364,15 +364,6 @@ export default {
       })
     }
   }
-  // methods: {
-  //   handleNodeClick() {
-  //     console.log(123)
-  //   },
-  //   handleTable() {
-  //     console.log(store.state.label)
-  //     this.tableData = [{ date: store.state.label }]
-  //   }
-  // },
 }
 </script>
 <style scoped>
