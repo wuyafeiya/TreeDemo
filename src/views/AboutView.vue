@@ -55,6 +55,10 @@ export default {
   data() {
     return {
       centerDialogVisible: false,
+      defaultProps: {
+        children: 'children',
+        label: 'label'
+      },
       AddList: [
         { id: 'Addfiled', name: '增加字段' },
         { id: 'Delfiled', name: '删除字段' },
@@ -69,6 +73,7 @@ export default {
         { id: 'MoveOut', name: '移出' },
         { id: 'Test', name: '检验' }
       ],
+      // 树形结构数据
       data: [
         {
           label: '一级 1',
@@ -209,7 +214,12 @@ export default {
             }
           ]
         }
-      ]
+      ],
+      // 表格 数据
+      tableData: [],
+      handleNodeClick() {
+        console.log(123)
+      }
     }
   }
 }
