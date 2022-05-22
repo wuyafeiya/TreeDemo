@@ -290,6 +290,7 @@ export default {
             // 选中 表格 数据
             if (this.TableId) {
               // 判断 数据 级别 有 children 父级 无 子级
+              // 父节点
               if (this.RowInfo.children) {
                 this.TableNode(this.TableId)
                 this.tableData.splice(this.index + 1, 0, {
@@ -298,6 +299,7 @@ export default {
                   children: []
                 })
                 console.log('我是顶级')
+                // 子节点
               } else {
                 this.ChildrenID(this.TableId)
                 this.tableData[this.FatherIndex].children.splice(
@@ -330,12 +332,7 @@ export default {
         }
       })
     },
-    // 子级判断
-    // ChildrenID(id) {
-    //   console.log(this.tableData)
-    //   console.log(id)
-    //   this.tableData.forEach((item, index) => {})
-    // }
+    // 子节点 判断
     ChildrenID(id) {
       this.tableData.forEach((item, index) => {
         console.log(item.children)
