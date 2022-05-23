@@ -10,7 +10,6 @@
 </template>
 
 <script>
-import store from '@/store'
 export default {
   data() {
     return {
@@ -191,23 +190,70 @@ export default {
       defaultProps: {
         children: 'children',
         label: 'label'
-      }
+      },
+      Data: [
+        {
+          baseMsgCaseRule: { id: 1, name: 'wj' },
+          childrenList: [
+            {
+              baseMsgCaseRule: { id: 1 - 1, name: 'wjj' },
+              childrenList: []
+            },
+            {
+              baseMsgCaseRule: { id: 1 - 2, name: 'wjjj' },
+              childrenList: []
+            },
+            {
+              baseMsgCaseRule: { id: 1 - 3, name: 'wjjjj' },
+              childrenList: []
+            }
+          ]
+        },
+        {
+          baseMsgCaseRule: { id: 2, name: 'ck' },
+          childrenList: [
+            {
+              baseMsgCaseRule: { id: 2 - 1, name: 'ckk' },
+              childrenList: []
+            },
+            {
+              baseMsgCaseRule: { id: 2 - 2, name: 'ckkk' },
+              childrenList: []
+            },
+            {
+              baseMsgCaseRule: { id: 2 - 3, name: 'ckkkk' },
+              childrenList: []
+            }
+          ]
+        },
+        {
+          baseMsgCaseRule: { id: 3, name: 'ku' },
+          childrenList: [
+            {
+              baseMsgCaseRule: { id: 3 - 1, name: 'kuu' },
+              childrenList: []
+            },
+            {
+              baseMsgCaseRule: { id: 3 - 2, name: 'kuuu' },
+              childrenList: []
+            },
+            {
+              baseMsgCaseRule: { id: 3 - 3, name: 'kuuuu' },
+              childrenList: []
+            }
+          ]
+        }
+      ]
     }
   },
-
   methods: {
     handleNodeClick(data) {
       console.log(data)
       this.$store.commit('ChangeLabel', data.label)
+    },
+    AddData() {
+      console.log(this.Data)
     }
-    // AddData(data) {
-    //   data.forEach((item) => {
-    //     item.name = item.label
-    //     if (item.children && item.children.length > 0) {
-    //       this.AddData(item.children)
-    //     }
-    //   })
-    // }
   }
 }
 </script>
