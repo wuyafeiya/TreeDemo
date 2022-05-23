@@ -32,9 +32,13 @@
             >
           </div>
           <div style="margin: 20px 0">
-            <el-button type="primary" v-for="item in MoveList" :key="item.id">{{
-              item.name
-            }}</el-button>
+            <el-button
+              type="primary"
+              v-for="item in MoveList"
+              :key="item.id"
+              @click="MoveFiled(item)"
+              >{{ item.name }}</el-button
+            >
           </div>
           <div>
             <el-button type="primary" style="width: 98px">保存</el-button>
@@ -74,6 +78,7 @@ export default {
       ChildrenIndex: '',
       FatherIndex: '',
       RowInfo: '',
+      tableNewData: '',
       defaultProps: {
         children: 'children',
         label: 'label'
@@ -272,22 +277,6 @@ export default {
       tableData: [
         { id: this.$store.state.label, data: store.state.label, children: [] }
       ]
-      // tableData: [
-      //   {
-      //     id: 3,
-      //     date: '2016-05-01',
-      //     name: '王小虎',
-      //     address: '上海市普陀区金沙江路 1519 弄',
-      //     children: [
-      //       {
-      //         id: 31,
-      //         date: '2016-05-01',
-      //         name: '王小虎',
-      //         address: '上海市普陀区金沙江路 1519 弄'
-      //       }
-      //     ]
-      //   }
-      // ]
     }
   },
   methods: {
@@ -348,6 +337,27 @@ export default {
           break
         case 'Delfiled':
           //...删除节点
+          if (this.TableId) {
+            // 判断 数据 级别 有 children 父级 无 子级
+            // 父节点
+            if (this.RowInfo.children) {
+              this.TableNode(this.TableId)
+              this.tableData.splice(this.index, 1)
+            }
+            // 子节点
+            else {
+              this.ChildrenID(this.TableId)
+              this.tableData[this.FatherIndex].children.splice(
+                this.ChildrenIndex,
+                1
+              )
+            }
+          } else {
+            this.$notify.warning({
+              title: '警告',
+              message: '没有选择删除节点'
+            })
+          }
           break
         // case 'Addor':
         //   breack,
@@ -368,7 +378,7 @@ export default {
     // 子节点 判断
     ChildrenID(id) {
       this.tableData.forEach((item, index) => {
-        console.log(item.children)
+        // console.log(item.children)
         if (item.children && item.children.length > 0) {
           item.children.forEach((item1, index1) => {
             if (item1.id == id) {
@@ -377,6 +387,103 @@ export default {
             }
           })
         }
+      })
+    },
+    //上移 下移
+    MoveFiled(data) {
+      switch (data.id) {
+        // 上移
+        case 'TopMove':
+          // 判断 选中 table 数据
+          if (this.TableId) {
+            // 判断 数据 级别 有 children 父级 无 子级
+            // 父节点
+            if (this.RowInfo.children) {
+              this.TableNode(this.TableId)
+              this.FMoveTopOrDown(-1, this.index)
+            }
+            // 子节点
+            else {
+              this.ChildrenID(this.TableId)
+              this.CMoveTopOrDown(-1, this.FatherIndex, this.ChildrenIndex)
+            }
+          }
+          break
+        // 下移
+        case 'DownMove':
+          if (this.TableId) {
+            // 判断 数据 级别 有 children 父级 无 子级
+            // 父节点
+            if (this.RowInfo.children) {
+              this.TableNode(this.TableId)
+              this.FMoveTopOrDown(1, this.index)
+            }
+            // 子节点
+            else {
+              this.ChildrenID(this.TableId)
+              // console.log();
+              this.CMoveTopOrDown(
+                1,
+                this.FatherIndex,
+                this.ChildrenIndex,
+                this.tableData[this.FatherIndex].children.length
+              )
+            }
+          }
+          break
+        // 移进
+        case 'MoveIn':
+          break
+      }
+    },
+    // 父节点上移或下移
+    FMoveTopOrDown(num, index) {
+      // num 为1 上移 为-1 下移
+      // judge 判断能否 上移或者下移
+      let judge =
+        num === -1 ? index + num > -1 : index + num < this.tableData.length
+      if (judge) {
+        let temp = this.tableData[index]
+        this.$set(this.tableData, index, this.tableData[index + num])
+        this.$set(this.tableData, index + num, temp)
+      } else {
+        let message =
+          num === -1 ? '当前在第一层，无法上移' : '当前在最后一层，无法下移'
+        this.noteWarning(message)
+      }
+    },
+    // 子节点上移或下移
+    CMoveTopOrDown(num, FatherIndex, ChildrenIndex, length) {
+      // num 为1 上移 为-1 下移
+      // judge 判断能否 上移或者下移
+      let judge =
+        num === -1 ? ChildrenIndex - 1 > -1 : ChildrenIndex + 1 < length
+      if (judge) {
+        let temp = this.tableData[FatherIndex].children[ChildrenIndex]
+        // console.log(this.tableData[FatherIndex])
+        this.$set(
+          this.tableData[FatherIndex].children,
+          ChildrenIndex,
+          this.tableData[FatherIndex].children[ChildrenIndex + num]
+        )
+        this.$set(
+          this.tableData[FatherIndex].children,
+          ChildrenIndex + num,
+          temp
+        )
+      } else {
+        let message =
+          num === -1
+            ? '当前在子级第一层，无法上移'
+            : '当前在子级最后一层，无法下移'
+        this.noteWarning(message)
+      }
+    },
+    // 警告
+    noteWarning(message) {
+      this.$notify.warning({
+        title: '警告',
+        message
       })
     }
   }
