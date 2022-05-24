@@ -250,6 +250,28 @@ export default {
     handleNodeClick(data) {
       console.log(data)
       this.$store.commit('ChangeLabel', data.label)
+    },
+    AddData() {
+      this.change(this.Data)
+      console.log(this.Data)
+    },
+    change(arr) {
+      arr.forEach((item) => {
+        if (item.baseMsgCaseRule) {
+          this.changeObj(item, item.baseMsgCaseRule)
+          delete item.baseMsgCaseRule
+        }
+        if (item.childrenList) {
+          item.children = item.childrenList
+          delete item.childrenList
+        }
+        this.change(item.children)
+      })
+    },
+    changeObj(item, obj) {
+      for (const key in obj) {
+        item[key] = obj[key]
+      }
     }
   }
 }
