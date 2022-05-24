@@ -5,10 +5,9 @@
       :props="defaultProps"
       @node-click="handleNodeClick"
     ></el-tree>
-    <el-button type="danger" @click="AddData(data)">点击</el-button>
+    <el-button type="danger" @click="AddData(Data)">点击</el-button>
   </div>
 </template>
-
 <script>
 export default {
   data() {
@@ -187,6 +186,7 @@ export default {
           ]
         }
       ],
+      NewArr: [],
       defaultProps: {
         children: 'children',
         label: 'label'
@@ -250,9 +250,6 @@ export default {
     handleNodeClick(data) {
       console.log(data)
       this.$store.commit('ChangeLabel', data.label)
-    },
-    AddData() {
-      console.log(this.Data)
     }
   }
 }

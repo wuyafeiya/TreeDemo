@@ -51,7 +51,6 @@
             border
             style="width: 100%"
             @cell-click="cellInfo"
-            :tree-props="{ children: 'children', hasChildren: 'hasChildren' }"
           >
             <el-table-column prop="data" label="日期" width="180">
             </el-table-column>
@@ -64,15 +63,24 @@
         </el-col>
       </el-row>
     </el-dialog>
+    <el-dialog title="提示" :visible="CaseDialogVisible" width="30%" center>
+      Case
+      <el-input v-model="Case"></el-input>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="CaseDialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="handleSave">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 <script>
-import store from '@/store'
 export default {
   data() {
     return {
       centerDialogVisible: false,
+      CaseDialogVisible: false,
       TableId: '',
+      Case: '',
       TreeId: '',
       index: '',
       ChildrenIndex: '',
@@ -84,6 +92,7 @@ export default {
         label: 'label'
       },
       AddList: [
+        { id: 'AddCase', name: '增加Case' },
         { id: 'Addfiled', name: '增加字段' },
         { id: 'Delfiled', name: '删除字段' },
         { id: 'Addor', name: '添加"or"' },
@@ -273,10 +282,7 @@ export default {
         }
       ],
       // 表格 数据
-
-      tableData: [
-        { id: this.$store.state.label, data: store.state.label, children: [] }
-      ]
+      tableData: []
     }
   },
   methods: {
@@ -284,12 +290,17 @@ export default {
       this.$store.commit('ChangeTreeName', data.label)
       this.TreeId = data.id
     },
-    // cellInfo(row,column,cell,e) {
-    // this.TableId = row.id
-    //   console.log(row);
-    //   console.log(column);
-    //   console.log(cell);
-    //   console.log(e);
+    handleSave() {
+      this.CaseDialogVisible = false
+      this.tableData.push({
+        id: this.Case,
+        data: this.Case,
+        children: [
+          { id: 'if', data: 'if', children: [] },
+          { id: 'then', data: 'then', children: [] }
+        ]
+      })
+    },
     cellInfo(row) {
       console.log(row)
       this.RowInfo = row
@@ -359,12 +370,8 @@ export default {
             })
           }
           break
-        // case 'Addor':
-        //   breack,
-        // case 'Addand':
-        //   breack
-        // case 'Addxor':
-        //   break
+        case 'AddCase':
+          this.CaseDialogVisible = true
       }
     },
     // 顶级判断
