@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-button type="text" @click="centerDialogVisible = true"
+    <el-button type="text" @click="click()"
       >点击打开 Dialog</el-button
     >
     <el-dialog
@@ -85,8 +85,12 @@ export default {
       index: '',
       ChildrenIndex: '',
       FatherIndex: '',
+      ThirdIndex: '',
       RowInfo: '',
-      tableNewData: '',
+      // 当前时间戳
+      timestamp: '',
+      // 选中表格元素的data
+      tdata: '',
       defaultProps: {
         children: 'children',
         label: 'label'
@@ -292,12 +296,13 @@ export default {
     },
     handleSave() {
       this.CaseDialogVisible = false
+      this.getTimestamp()
       this.tableData.push({
         id: this.Case,
         data: this.Case,
         children: [
-          { id: 'if', data: 'if', children: [] },
-          { id: 'then', data: 'then', children: [] }
+          { id: this.timestamp, data: 'if', children: [] },
+          { id: this.timestamp + 1, data: 'then', children: [] }
         ]
       })
     },
@@ -305,40 +310,66 @@ export default {
       console.log(row)
       this.RowInfo = row
       this.TableId = row.id
+      this.tdata = row.data
     },
     AddFiled(data) {
       switch (data.id) {
         case 'Addfiled':
+          this.getTimestamp()
           if (this.$store.state.TreeName) {
             // 选中 表格 数据
             if (this.TableId) {
+              this.TableNode(this.TableId)
               // 判断 数据 级别 有 children 父级 无 子级
-              // 父节点
-              if (this.RowInfo.children) {
-                this.TableNode(this.TableId)
-                this.tableData.splice(this.index + 1, 0, {
-                  id: this.TreeId,
-                  data: this.$store.state.TreeName,
-                  children: []
+              // 判断 点击的是 if/then
+              if (this.tdata === 'if' || this.tdata === 'then') {
+                console.log(1)
+                this.tableData[this.FatherIndex].children[
+                  this.ChildrenIndex
+                ].children.push({
+                  id: this.timestamp,
+                  data: this.$store.state.TreeName
                 })
-                console.log('我是顶级')
-                // 子节点
-              } else {
-                this.ChildrenID(this.TableId)
-                this.tableData[this.FatherIndex].children.splice(
-                  this.ChildrenIndex + 1,
-                  0,
-                  { id: this.TreeId, data: this.$store.state.TreeName }
-                )
+                this.clearValue()
               }
-              console.log(this.index)
-              this.TableId = ''
+              // 判断是否为 if/then的子级
+              else if (this.ThirdIndex === 0 ? true : this.ThirdIndex) {
+                console.log(2)
+                this.tableData[this.FatherIndex].children[
+                  this.ChildrenIndex
+                ].children.splice(this.ThirdIndex + 1, 0, {
+                  id: this.timestamp,
+                  data: this.$store.state.TreeName
+                })
+                this.clearValue()
+              } else {
+                // 父节点
+                if (this.RowInfo.children) {
+                  this.tableData.splice(this.FatherIndex + 1, 0, {
+                    id: this.timestamp,
+                    data: this.$store.state.TreeName,
+                    children: []
+                  })
+                  console.log('我是顶级')
+                  // 子节点
+                } else {
+                  this.tableData[this.FatherIndex].children.splice(
+                    this.ChildrenIndex + 1,
+                    0,
+                    { id: this.timestamp, data: this.$store.state.TreeName }
+                  )
+                   this.clearValue()
+                }
+                this.clearValue()
+              }
             } else {
-              this.tableData[this.tableData.length - 1].children.push({
-                id: this.TreeId,
-                data: this.$store.state.TreeName
+              this.tableData[this.tableData.length-1].children.push({
+                id: this.timestamp,
+                data: this.$store.state.TreeName,
+                children:[]
               })
             }
+            this.clearValue()
           } else {
             this.$notify.warning({
               title: '警告',
@@ -353,11 +384,11 @@ export default {
             // 父节点
             if (this.RowInfo.children) {
               this.TableNode(this.TableId)
-              this.tableData.splice(this.index, 1)
+              this.tableData.splice(this.FatherIndex, 1)
             }
             // 子节点
             else {
-              this.ChildrenID(this.TableId)
+              this.TableNode(this.TableId)
               this.tableData[this.FatherIndex].children.splice(
                 this.ChildrenIndex,
                 1
@@ -374,27 +405,35 @@ export default {
           this.CaseDialogVisible = true
       }
     },
-    // 顶级判断
+    // table节点判断
     TableNode(id) {
       this.tableData.forEach((item, index) => {
         if (item.id == id) {
-          this.index = index
-        }
-      })
-    },
-    // 子节点 判断
-    ChildrenID(id) {
-      this.tableData.forEach((item, index) => {
-        // console.log(item.children)
-        if (item.children && item.children.length > 0) {
+          this.FatherIndex = index
+        } else if (item.children && item.children.length > 0) {
           item.children.forEach((item1, index1) => {
             if (item1.id == id) {
               this.FatherIndex = index
               this.ChildrenIndex = index1
+            } else if (item1.children && item1.children.length > 0) {
+              item1.children.forEach((item2, index2) => {
+                if (item2.id == id) {
+                  this.FatherIndex = index
+                  this.ChildrenIndex = index1
+                  this.ThirdIndex = index2
+                }
+              })
             }
           })
         }
       })
+    },
+    // 清空值
+    clearValue() {
+      this.FatherIndex = ''
+      this.ThirdIndex = ''
+      this.ChildrenIndex = ''
+      this.TableId = ''
     },
     //上移 下移
     MoveFiled(data) {
@@ -407,11 +446,11 @@ export default {
             // 父节点
             if (this.RowInfo.children) {
               this.TableNode(this.TableId)
-              this.FMoveTopOrDown(-1, this.index)
+              this.FMoveTopOrDown(-1, this.FatherIndex)
             }
             // 子节点
             else {
-              this.ChildrenID(this.TableId)
+              this.TableNode(this.TableId)
               this.CMoveTopOrDown(-1, this.FatherIndex, this.ChildrenIndex)
             }
           }
@@ -427,7 +466,7 @@ export default {
             }
             // 子节点
             else {
-              this.ChildrenID(this.TableId)
+              this.TableNode(this.TableId)
               // console.log();
               this.CMoveTopOrDown(
                 1,
@@ -492,6 +531,17 @@ export default {
         title: '警告',
         message
       })
+    },
+    // 获取当前时间戳
+    getTimestamp() {
+      this.timestamp = new Date().getTime()
+      // console.log(this.timestamp);
+    },
+    //
+    click(){
+      this.centerDialogVisible = true
+      this.getTimestamp()
+      this.tableData.push({id:this.timestamp,data:this.$store.state.label,children:[]})
     }
   }
 }
